@@ -8,9 +8,6 @@ info:
   contact:
     name: Jérémy HAURAY
     email: jeremy.hauray@mythalesgroup.io
-  license:
-    name: Propriété THALES
-    url: ''
 servers: 
   - url: https://accueil.cloud.thalesgroup.fr/v1
     description: production
