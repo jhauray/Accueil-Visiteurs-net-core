@@ -1,0 +1,114 @@
+openapi: 3.0.0
+
+info:
+  description: >-
+    Voici la définition de l'API d'échange en une application SPA d'accueil, et son backend.
+  version: 1.0.0
+  title: Accueil visiteurs
+  contact:
+    name: Jérémy HAURAY
+    email: jeremy.hauray@mythalesgroup.io
+  license:
+    name: Propriété THALES
+    url: ''
+servers: 
+  - url: https://accueil.cloud.thalesgroup.fr/v1
+    description: production
+  - url: http://localhost:8080/v1
+    description: Dev
+
+tags:
+  - name: visite
+    description: contient les informations collectées lors d'une visite sur le portail
+  - name: info
+    description: Informations techniques concernant le backend
+
+paths:
+  /visite:
+    post:
+      tags:
+        - visite
+      summary: Ajouter une nouvelle visite
+      operationId: addVisit
+      requestBody:
+        description: Nouvelle visite à ajouter à l'historique
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Visite'
+      responses:
+        '201':
+          description: Visite enregistrée avec succès
+        '202':
+          description: Demande d'enregistrement visite prise en compte (asynchrone)
+        '409':
+          description: La création est impossible car la ressource est déjà existante.
+        '422':
+          description: Impossible de traiter, la visite est incompréhensible ou incomplète.
+          
+    get:
+      tags:
+        - visite
+      summary: lire toutes les visites
+      operationId: getVisits
+      responses:
+        '200':
+          description: Lecture des visites réussie
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Visite'
+        '400':
+          description: La requête n'est pas correctement constitutée (des paramètres de filtres, de tri ou de pagination sont incorrects)
+        '500':
+          description: Erreur interne serveur à la lecture des visites
+  /info:
+    get:
+      tags:
+        - info
+      summary: Récupérer des informations techniques du backend
+      operationId: getInfos
+      responses:
+        '200':
+          description: Lecture des informations réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackInfo'
+        '400':
+          description: La requête n'est pas correctement constitutée (des paramètres de filtres, de tri ou de pagination sont incorrects)
+        '500':
+          description: Erreur interne serveur à la lecture des informations
+components:
+  schemas:
+    Visite:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          format: int32
+        hd:
+          type: string
+          format: date-time
+        visiteur:
+          type: string
+    BackInfo:
+      type: object
+      properties:
+        langage:
+          type: string
+        langage_version:
+          type: string
+        clouder:
+          type: string
+        source_url:
+          type: string
+          format: uri
+        playbook_url:
+          type: string
+          format: uri
+   
